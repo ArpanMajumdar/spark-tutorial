@@ -56,3 +56,41 @@ A spark application consists of 2 kinds of processes:
 - You can monitor the progress of a job through the Spark web UI.
 - The Spark UI is available on port 4040 of the driver node.
 - It’s very useful, especially for tuning and debugging.
+
+## Running a spark application
+`spark-submit` lets you send your application code to a cluster and launch it to execute there. Upon submission, the application will run until it exits (completes the task) or encounters an error. 
+
+``` bash
+./bin/spark-submit \
+  --class org.apache.spark.examples.SparkPi \
+  --master local \
+  ./path/to/your/example.jar
+```
+
+By changing the master argument of spark-submit, we can also submit the same application to a cluster running Spark’s standalone cluster manager, Mesos or YARN.
+
+## Datasets
+- Datasets are type safe version of Spark's strcutured API.
+- The Dataset API gives users the ability to assign a Java/Scala class to the records within a DataFrame and manipulate it as a collection of typed objects, similar to a Java ArrayList or Scala Seq. 
+- The APIs available on Datasets are type-safe, meaning that you cannot accidentally view the objects in a Dataset as being of another class than the class you put in initially.
+- The Dataset class is parameterized with the type of object contained inside: `Dataset<T>` in Java and `Dataset[T]` in Scala. 
+
+## Spark structured APIs
+
+These APIs refer to three core types of distributed collection APIs:
+1. Datasets
+2. DataFrames
+3. SQL tables and views
+
+## RDD
+
+### How to create RDD
+
+- Take an existing collection in your program and pass it to Spark Context's `parallelize` method. 
+- All the elements in the collection will then be copied to form a distributed dataset that can be operated in parallel.
+- It's very handy to create an RDD with little effort
+- However, not very practical for working with large datasets.
+- Practically, RDDs are created from external storage by calling `textFile` method on the spark context.
+- The external storage is usually a distributed file system like HDFS.
+- There are other data sources that can be integrated with Spark and used to create RDDs including JDBC, Cassandra, Elasticsearch etc.
+

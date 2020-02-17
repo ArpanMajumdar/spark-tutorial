@@ -9,7 +9,7 @@ fun main() {
 
     val logger = LoggerFactory.getLogger("WordCount")
 
-    val sparkConf = SparkConf().setAppName("word-count").setMaster("local[4]")
+    val sparkConf = SparkConf().setAppName("word-count").setMaster("local[*]")
     val sparkContext = JavaSparkContext(sparkConf)
 
     val lines: JavaRDD<String> = sparkContext.textFile("input/word_count.text", 4)
