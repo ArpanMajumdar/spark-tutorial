@@ -13,8 +13,8 @@ data class Airport(
     val city: String,
     val iataCode: String,
     val icaoCode: String,
-    val latitude: String,
-    val longitude: String,
+    val latitude: Double,
+    val longitude: Double,
     val altitude: String
 )
 
@@ -32,7 +32,7 @@ fun main() {
     val airports: JavaRDD<String> = sparkContext.textFile("input/airports.text")
 
     // Data filter and transformation
-    val airportsInUsa: JavaRDD<Airport> = airports
+    val allAirports: JavaRDD<Airport> = airports
         .map { line ->
             val tokens = line.split(COMMA_DELIMITER)
             val strippedTokens = tokens.map { token -> token.trim() }
@@ -46,18 +46,26 @@ fun main() {
                 city = strippedTokens[3],
                 iataCode = strippedTokens[4],
                 icaoCode = strippedTokens[5],
-                latitude = strippedTokens[6],
-                longitude = strippedTokens[7],
+                latitude = strippedTokens[6].toDouble(),
+                longitude = strippedTokens[7].toDouble(),
                 altitude = strippedTokens[8]
             )
         }
+
+    val airportsInUsa = allAirports
         .filter { airport -> airport.city == "\"United States\"" }
 
     val airportNamesInUsa: JavaRDD<String> =
         airportsInUsa.map { airport -> "${airport.airportName1} , ${airport.airportName2}" }
 
+    val airportsWithLatitudeGreaterThan40 = allAirports.filter { airport ->
+        airport.latitude > 40.0
+    }
+
     // Write result to output file
     FileUtils.recursivelyDeleteDirectory("output/airportNamesInUsa")
+    FileUtils.recursivelyDeleteDirectory("output/airportsWithLatitudeGreaterThan40")
     airportNamesInUsa.saveAsTextFile("output/airportNamesInUsa")
+    airportsWithLatitudeGreaterThan40.saveAsTextFile("output/airportsWithLatitudeGreaterThan40")
 }
 

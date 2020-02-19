@@ -9,8 +9,10 @@ import java.nio.file.Paths
 object FileUtils {
     fun recursivelyDeleteDirectory(dirPath: String) {
         val outputDir = Paths.get(dirPath)
-        Files.walk(outputDir).map(Path::toFile).forEach { file: File -> file.delete() }
-        Files.deleteIfExists(outputDir)
+        if (Files.exists(outputDir)) {
+            Files.walk(outputDir).map(Path::toFile).forEach { file: File -> file.delete() }
+            Files.deleteIfExists(outputDir)
+        }
     }
 }
 
