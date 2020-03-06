@@ -1,5 +1,6 @@
 package com.arpan.spark.wordcount
 
+import com.arpan.spark.util.SparkUtils
 import org.apache.spark.SparkConf
 import org.apache.spark.api.java.JavaRDD
 import org.apache.spark.api.java.JavaSparkContext
@@ -9,8 +10,7 @@ fun main() {
 
     val logger = LoggerFactory.getLogger("WordCount")
 
-    val sparkConf = SparkConf().setAppName("word-count").setMaster("local[*]")
-    val sparkContext = JavaSparkContext(sparkConf)
+    val sparkContext = SparkUtils.getSparkContext("word-count")
 
     val lines: JavaRDD<String> = sparkContext.textFile("input/word_count.text", 4)
     val words = lines.flatMap { line ->

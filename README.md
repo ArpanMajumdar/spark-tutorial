@@ -45,12 +45,28 @@ A spark application consists of 2 kinds of processes:
 - In Spark, instead of modifying the data immediately when you express some operation, you build up a plan of transformations that you would like to apply to your source data. By waiting until the last minute to execute the code, Spark compiles this plan from your raw DataFrame transformations to a streamlined physical plan that will run as efficiently as possible across the cluster.
 
 ## Actions
+- Actions are the operations that return a final value to the driver program or persist data to an external storage.
 - To trigger the computation, we run an action.
 - An action instructs Spark to compute a result from a series of transformations.
 - There are 3 kinds of actions:
     - Actions to view data in the console
     - Actions to collect data to native objects in the respective language
     - Actions to write to output data sources
+
+Examples of actions:
+1. collect
+2. count
+3. countByValue
+4. take
+5. saveAsTextFile
+6. reduce
+
+**collect**
+
+- Collect operation retrieves the entire RDD and returns it to the driver program in the form of regular collection or value. e.g.- If yu have a String RDD, you will get a list of Strings.
+- This is quite useful if the spark program has filtered RDD down to a relatively smaller size and you want to deal with it locally.
+- The entire dataset must fit in the memory of a single machine as it needs to be copied to the driver when collect is called.
+- `collect` should not be used on large datasets. 
 
 ## Spark UI
 - You can monitor the progress of a job through the Spark web UI.

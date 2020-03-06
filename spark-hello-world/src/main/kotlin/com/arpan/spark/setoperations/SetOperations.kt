@@ -2,6 +2,7 @@ package com.arpan.spark.setoperations
 
 
 import com.arpan.spark.util.FileUtils
+import com.arpan.spark.util.SparkUtils
 import org.apache.spark.SparkConf
 import org.apache.spark.api.java.JavaSparkContext
 import org.slf4j.LoggerFactory
@@ -19,8 +20,7 @@ data class Log(
 fun main() {
     val logger = LoggerFactory.getLogger("LogUnion")
 
-    val sparkConf = SparkConf().setAppName("log-union").setMaster("local[*]")
-    val sparkContext = JavaSparkContext(sparkConf)
+    val sparkContext = SparkUtils.getSparkContext("log-union")
 
     // Read logs as RDD
     val logs19950701 = sparkContext.textFile("input/nasa_19950701.tsv")
