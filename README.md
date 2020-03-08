@@ -110,3 +110,56 @@ These APIs refer to three core types of distributed collection APIs:
 - The external storage is usually a distributed file system like HDFS.
 - There are other data sources that can be integrated with Spark and used to create RDDs including JDBC, Cassandra, Elasticsearch etc.
 
+## Dataframes
+
+DataFrames and Datasets are (distributed) table-like collections with well-defined rows and columns. Each column must have the same number of rows as all the other columns (although you can use null to specify the absence of a value) and each column has type information that must be consistent for every row in the collection. To Spark, DataFrames and Datasets represent immutable, lazily evaluated plans that specify what operations to apply to data residing at a location to generate some output. When we perform an action on a DataFrame, we instruct Spark to perform the actual transformations and return the result. These represent plans of how to manipulate rows and columns to compute the user’s desired result.
+
+### How spark code is actually executed across a cluster?
+1. Write DataFrame/Dataset/SQL Code.
+2. If valid code, Spark converts this to a Logical Plan.
+3. Spark transforms this Logical Plan to a Physical Plan, checking for optimizations along the way.
+4. Spark then executes this Physical Plan (RDD manipulations) on the cluster.
+
+### Schema
+A schema defines the column names and types of a DataFrame. We can either let a data source define the schema or we can define it explicitly ourselves.
+
+ > When using Spark for production Extract, Transform, and Load (ETL), it is often a good idea to define your schemas manually, especially when working with untyped data sources like CSV and JSON because schema inference can vary depending on the type of data that you read in.
+
+ ### Columns
+ There are a lot of different ways to construct and refer to columns but the two simplest ways are by using the col or column functions. To use either of these functions, you pass in a column name:
+
+ ``` scala
+ // Scala
+import org.apache.spark.sql.functions.{col, column}
+col("someColumnName")
+column("someColumnName")
+```
+
+ ``` python
+ # Python
+from pyspark.sql.functions import col, column
+col("someColumnName")
+column("someColumnName")
+ ```
+
+ ``` kotlin
+ // Kotlin
+ import org.apache.spark.sql.functions.*
+ col("someColumnName")
+ column("someColumnName")
+ ```
+
+ ### Expressions
+ An expression is a set of transformations on one or more values in a record in a DataFrame. Think of it like a function that takes as input one or more column names, resolves them, and then potentially applies more expressions to create a single value for each record in the dataset. Importantly, this “single value” can actually be a complex type like a Map or Array. 
+
+ ### DataFrame Transformations
+
+- add rows or columns
+- remove rows or columns
+- transform a row into a column (or vice versa)
+- change the order of rows based on the values in columns
+
+### Literals
+
+Sometimes, we need to pass explicit values into Spark that are just a value (rather than a new column). This might be a constant value or something we’ll need to compare to later on. The way we do this is through literals. This is basically a translation from a given programming language’s literal value to one that Spark understands.
+
